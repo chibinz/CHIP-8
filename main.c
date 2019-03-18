@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <cglm/cglm.h>
 
 #include "cpu.h"
 #include "ram.h"
@@ -25,10 +26,7 @@ int main(int argc, char **argv)
     initRAM();
     readROM(argv[1]);
 
-    GLFWwindow *window = initWindow(WIDTH, HEIGHT, 10);
-
-    drawVertices();
-    // getchar();
+    GLFWwindow *window = initWindow(WIDTH, HEIGHT, 20);
     int nVertices = numOfVertices();
 
     char *vertexShader = LoadShader("sprite.vert");
@@ -36,22 +34,27 @@ int main(int argc, char **argv)
     unsigned int shader = CreateShader(vertexShader, fragmentShader);
 
     printf("\n%s\n%s\n", vertexShader, fragmentShader);
-    initVertexArray();
+
+    // vertex buffers must be generated and binded before vertex arrays
     initVertexBuffer();
+    initVertexArray();
     projectScreen(shader);
-    
+
     //call interpreter to interpret the rom;
     while(pc < rsize + 0x200 && !glfwWindowShouldClose(window))
     {
         interpret();
-        
+
         drawVertices();
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUseProgram(shader); 
 
         glDrawArrays(GL_TRIANGLES, 0, nVertices);
+
+        // printf("0x%x ", glGetError());
 
         glfwSwapBuffers(window);
 

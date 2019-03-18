@@ -24,7 +24,7 @@ int debug()
 int interpret()
 {
     // debug();
-    disassemble();
+    // disassemble();
 
     uint8_t v, x, y, z, max;
     v = ram[pc] >> 4;

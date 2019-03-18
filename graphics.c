@@ -11,7 +11,7 @@ int drawSprite(unsigned char x, unsigned char y, char n)
 {
     int flag = 0;
 
-    printf("\n\n\n");
+    // printf("\n\n\n");
     for(int j = 0; j < n; j++)
     {
         unsigned char mask = 0b10000000;
@@ -37,14 +37,14 @@ int drawSprite(unsigned char x, unsigned char y, char n)
         }
     }
 
-    for(int j = 0; j < HEIGHT; j++, putchar('\n'))
-        for(int k = 0; k < WIDTH; k++)
-            if(screenBuffer[j * WIDTH + k])
-                putchar('#');
-            else
-                putchar(' ');
+    // for(int j = 0; j < HEIGHT; j++, putchar('\n'))
+    //     for(int k = 0; k < WIDTH; k++)
+    //         if(screenBuffer[j * WIDTH + k])
+    //             putchar('#');
+    //         else
+    //             putchar(' ');
 
-    printf("\n\n\n");
+    // printf("\n\n\n");
 
     return flag;
 }
@@ -54,18 +54,13 @@ int numOfVertices(void)
     return WIDTH * HEIGHT * 2 * 3;
 }
 
-int sizeOfArray(void)
-{
-    return sizeof(float) * WIDTH * HEIGHT * 2 * 3 * 3;
-}
-
 void drawVertices(void)
 {
     // 2 triangle, 3 vertices, 3 attributes
 
     for(int i = 0; i < HEIGHT; i++)
         for(int j = 0; j < WIDTH; j++)
-            if(screenBuffer[j * WIDTH + i])
+            if(screenBuffer[i * WIDTH + j])
                 drawPixel(i, j, 1);
 }
 
@@ -91,7 +86,7 @@ void initVertexBuffer(void)
     
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeOfArray(), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 }
 

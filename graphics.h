@@ -17,7 +17,6 @@ void clearScreen(void);
 int drawSprite(unsigned char x, unsigned char y, char n);
 
 int numOfVertices(void);
-int sizeOfArray(void);
 void drawVertices(void);
 void drawPixel(int y, int x, int color);
 
