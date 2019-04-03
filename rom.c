@@ -10,7 +10,7 @@ void readROM(char *file)
         printf("Can not open rom\n");
         exit(-1);
     }
-    
+
     // get romsize
     fseek(rom, 0L, SEEK_END);
     rsize = ftell(rom);
@@ -21,6 +21,6 @@ void readROM(char *file)
 
     printf("Rom name: %s\n", file);
     printf("File size(number of bytes): %u\n", rsize);
- 
+
     fclose(rom);
 }

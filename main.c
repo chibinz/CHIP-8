@@ -12,7 +12,9 @@
 #include "graphics.h"
 #include "window.h"
 #include "shader.h"
+#include "keyboard.h"
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 int main(int argc, char **argv)
 {
     //check number of arguments
@@ -45,12 +47,12 @@ int main(int argc, char **argv)
     {
         interpret();
 
-        drawVertices();
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        // drawVertices();
+        // glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        glUseProgram(shader); 
+
+        glUseProgram(shader);
 
         glDrawArrays(GL_TRIANGLES, 0, nVertices);
 
@@ -59,6 +61,16 @@ int main(int argc, char **argv)
         glfwSwapBuffers(window);
 
         glfwPollEvents();
+
+        for(int i = 0; i < 0x10; i++)
+        {
+            if(glfwGetKey(window, keymap(i)) == GLFW_PRESS)
+                keyboardState[i] = 1;
+            else
+                keyboardState[i] = 0;
+
+            printf("%d", keyboardState[i]);
+        }
 
     }
 

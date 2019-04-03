@@ -15,12 +15,13 @@ GLFWwindow *initWindow(int width, int height, int scale)
     GLFWwindow *window = glfwCreateWindow(width * scale, height * scale, "Test", NULL, NULL);
     if(window == NULL)
     {
-        printf("Window creation failed\n"); 
+        printf("Window creation failed\n");
         // exit(-1);
     }
 
-    glfwMakeContextCurrent(window); 
-    glfwSwapInterval(1);
+    glfwMakeContextCurrent(window);
+    // glfwSwapInterval(1);
+    glfwSetKeyCallback(window, NULL);
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {

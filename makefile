@@ -1,5 +1,14 @@
-main.o: main.c
-	clang -g -c main.c
+SRC = $(wildcard *.c)
+OBJ = $(SRC:.c=.o)
 
-main: main.o
-	clang -o main main.o
+CC = gcc
+CFLAGS = -O3
+LDFLAGS = -lopengl32 -lglfw3dll
+
+main.exe: $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+.PHONY: clean
+
+clean:
+	del /q /s $(OBJ)

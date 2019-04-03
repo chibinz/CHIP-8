@@ -3,10 +3,10 @@
 int debug()
 {
     disassemble();
-    
+
     for(int i = 0; i < 0x10; i++)
         printf("register %x: %x\n", i, reg[i]);
-    
+
     printf("register I: %x\n", i);
     printf("register F: %x\n", f);
 
@@ -24,18 +24,18 @@ int debug()
 int interpret()
 {
     // debug();
-    // disassemble();
+    disassemble();
 
     uint8_t v, x, y, z, max;
     v = ram[pc] >> 4;
     x = ram[pc] & 0x0f;
     y = ram[pc + 1] >> 4;
     z = ram[pc + 1] & 0x0f;
-    max = reg[x] > reg[y] ? reg[x] : reg[y]; 
-    
+    max = reg[x] > reg[y] ? reg[x] : reg[y];
+
     // main switch
     // the opcodes are stored in big endian in chip-8
-    switch(v) 
+    switch(v)
     {
         case 0x00:
             if(ram[pc + 1] == 0xe0)
@@ -97,7 +97,7 @@ int interpret()
             break;
         case 0x08:
             switch(z)
-            {   
+            {
                 case 0x00:
                     // LD
                     reg[x] = reg[y];
@@ -122,7 +122,7 @@ int interpret()
                 case 0x05:
                     // SUB
                     f = (reg[x] == max) ? 1 : 0;
-                    reg[x] -= reg[y]; 
+                    reg[x] -= reg[y];
                     break;
                 case 0x06:
                     // SHR
@@ -174,10 +174,26 @@ int interpret()
             break;
         case 0x0e:
             if(ram[pc + 1] == 0x9e)
-                printf("SKP  V%x\n", x);
+            {
+                printf("SKP  V%x, %x\n", x, reg[x]);
+                if(keyboardState[reg[x]])
+                {
+                    pc += 4;
+                    return 0;
+                }
+                break;
+            }
             else if(ram[pc + 1] == 0xa1)
-                printf("SKNP V%x\n", x);
-            else    
+            {
+                printf("SKNP V%x, %x\n", x, reg[x]);
+                if(keyboardState[reg[x]] == 0)
+                {
+                    pc += 4;
+                    return 0;
+                }
+                break;
+            }
+            else
                 printf("invalid operation\n");
             break;
         case 0x0f:
@@ -189,7 +205,16 @@ int interpret()
                     break;
                 case 0x0a:
                     // LD
-                    reg[x] = k;
+                    while(1)
+                    {
+                        for(int i = 0; i < 0x10; i++)
+                            if(keyboardState[i] == 1)
+                            {
+                                reg[x] = i;
+                                pc += 2;
+                                return 0;
+                            }
+                    }
                     break;
                 case 0x15:
                     // LD
@@ -211,7 +236,7 @@ int interpret()
                     // LD
                     ram[i] = reg[x] / 100;
                     ram[i + 1] = (reg[x] % 100) / 10;
-                    ram[i + 2] = reg[x] % 10; 
+                    ram[i + 2] = reg[x] % 10;
                     break;
                 case 0x55:
                     // LD

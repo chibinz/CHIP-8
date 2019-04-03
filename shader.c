@@ -17,7 +17,7 @@ unsigned int CompileShader(unsigned int type, const char *source)
         glGetShaderInfoLog(id, length, &length, message);
         printf("\n%s\n", message);
     }
-    
+
     return id;
 }
 
@@ -42,7 +42,7 @@ char * LoadShader(const char *shaderPath)
 {
     FILE *sfile = fopen(shaderPath, "rb");
     long length = 0;
-    
+
     fseek(sfile, 0, SEEK_END);
     length = ftell(sfile);
     fseek(sfile, 0, SEEK_SET);

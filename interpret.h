@@ -6,6 +6,7 @@
 #include "ram.h"
 #include "graphics.h"
 #include "disassemble.h"
+#include "keyboard.h"
 
 int debug();
 int interpret();

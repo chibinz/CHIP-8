@@ -1,19 +1,19 @@
 #include "disassemble.h"
 
 int disassemble(void)
-{ 
+{
     uint8_t v, x, y, z, max;
     v = ram[pc] >> 4;
     x = ram[pc] & 0x0f;
     y = ram[pc + 1] >> 4;
     z = ram[pc + 1] & 0x0f;
-    
+
     //print program counter location and code
     printf("%03x %02x %02x ", pc, ram[pc], ram[pc + 1]);
 
     //main switch
     //the opcodes are stored in big endian in chip-8
-    switch(v) 
+    switch(v)
     {
         case 0x00:
             if(ram[pc + 1] == 0xe0)
@@ -46,7 +46,7 @@ int disassemble(void)
             break;
         case 0x08:
             switch(z)
-            {   
+            {
                 case 0x00:
                     printf("LD   V%x V%x\n", x, y);
                     break;
@@ -57,7 +57,7 @@ int disassemble(void)
                     printf("AND  V%x V%x\n", x, y);
                     break;
                 case 0x03:
-                    printf("XOR  V%x V%x\n", x, y);               
+                    printf("XOR  V%x V%x\n", x, y);
                     break;
                 case 0x04:
                     printf("ADD  V%x V%x\n", x, y);
@@ -101,7 +101,7 @@ int disassemble(void)
                 printf("SKP  V%x\n", x);
             else if(ram[pc + 1] == 0xa1)
                 printf("SKNP V%x\n", x);
-            else    
+            else
                 printf("invalid operation\n");
             break;
         case 0x0f:
@@ -117,13 +117,13 @@ int disassemble(void)
                     printf("LD   DT V%x\n", x);
                     break;
                 case 0x18:
-                    printf("LD   ST V%x\n", x);               
+                    printf("LD   ST V%x\n", x);
                     break;
                 case 0x1E:
                     printf("ADD  I V%x\n", x);
                     break;
                 case 0x29:
-                    printf("LD   F V%x\n", x); 
+                    printf("LD   F V%x\n", x);
                     break;
                 case 0x33:
                     printf("LD   B V%x\n", x);
