@@ -10,14 +10,9 @@ libminifb = minifb.dependency('minifb')
 executable('CHIP-8',
            'cpu.c',
            'disassemble.c',
-           'glad.c',
-           'graphics.c',
            'interpret.c',
-           'keyboard.c',
            'main.c',
            'ram.c',
            'rom.c',
-           'shader.c',
-           'window.c',
            install : true,
-	   dependencies: [libminifb])
+	         dependencies: [libminifb])

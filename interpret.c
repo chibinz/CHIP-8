@@ -1,5 +1,7 @@
 #include "interpret.h"
 
+int keyboardState[8];
+
 int debug()
 {
     disassemble();
@@ -41,7 +43,7 @@ int interpret()
             if(ram[pc + 1] == 0xe0)
             {
                 // CLS
-                clearScreen();
+                // clearScreen();
             }
             else if(ram[pc + 1] == 0xee)
             {
@@ -170,7 +172,7 @@ int interpret()
             break;
         case 0x0d:
             // DRW
-            f = drawSprite(reg[x], reg[y], z);
+            // f = drawSprite(reg[x], reg[y], z);
             break;
         case 0x0e:
             if(ram[pc + 1] == 0x9e)
