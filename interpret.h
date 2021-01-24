@@ -1,10 +1,10 @@
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "cpu.h"
-#include "ram.h"
 #include "disassemble.h"
+#include "ram.h"
 
 int debug();
 int interpret();
