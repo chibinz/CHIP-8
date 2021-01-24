@@ -13,4 +13,4 @@ executable('chip',
            'interpret.c',
            'main.c',
            install : true,
-	         dependencies: [libminifb])
+	         dependencies : [libminifb])

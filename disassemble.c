@@ -4,18 +4,18 @@
 
 void disassemble(u16 instruction) {
   u8 lo, hi, v, x, y, z;
-  lo = (u8)(instruction);
-  hi = (u8)(instruction >> 8);
+  lo = (u8)(instruction >> 8);
+  hi = (u8)(instruction);
   v = lo >> 4;
   x = lo & 0x0f;
   y = hi >> 4;
   z = hi & 0x0f;
 
-  // Print program counter location and code
+  // Print instruction
   printf("%02x %02x ", lo, hi);
 
   // Main switch
-  // The opcodes are stored in big endian in chip-8
+  // Opcodes are stored in big endian in chip-8
   switch (v) {
   case 0x00:
     if (hi == 0xe0)
