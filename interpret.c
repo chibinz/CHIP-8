@@ -1,7 +1,6 @@
-#include "interpret.h"
+#include "console.h"
 
-int keyboardState[8];
-
+/*
 int debug() {
   disassemble();
 
@@ -242,3 +241,4 @@ int interpret() {
 
   return 0;
 }
+*/
