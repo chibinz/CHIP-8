@@ -17,7 +17,8 @@ cpu cpu_new();
 typedef struct {
   cpu cpu;
   u8 ram[0x1000];  // 4096 bytes of ram
-  u32 fb[32 * 64]; // Frame buffer, 64 by 32 pixels, black and white
+  u8 fb[32 * 64]; // Frame buffer, 64 by 32 pixels, black and white
+  u8 keypad[16];
 } console;
 
 console console_new();

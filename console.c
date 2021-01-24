@@ -41,7 +41,7 @@ cpu cpu_new() {
 console console_new() {
   cpu cpu = cpu_new();
 
-  console chip = {cpu, .ram = {0}, .fb = {0}};
+  console chip = {cpu, .ram = {0}, .fb = {0}, .keypad = {0}};
   memcpy(chip.ram, characters, sizeof(characters));
 
   return chip;
