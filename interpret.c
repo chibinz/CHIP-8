@@ -4,7 +4,6 @@
 
 #include "console.h"
 
-static void invalid(u16 instr) { printf("Invalid instruction: %04x!", instr); }
 
 void console_step(console *console) {
   u8 *ram = console->ram;

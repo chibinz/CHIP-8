@@ -1,6 +1,18 @@
+#include <assert.h>
 #include <stdio.h>
 
 #include "console.h"
+
+#define dis(mnemonic, fmt, ...) printf(mnemonic "\t" fmt "\n", __VA_ARGS__)
+
+void disassemble_rom(u8 *rom, usize start, usize len) {
+  assert(start % 2 == 0);
+  assert(len % 2 == 0);
+
+  for (usize i = 0; i < len; i += 2) {
+    disassemble(*(u16 *)(rom + start + i));
+  }
+}
 
 void disassemble(u16 instr) {
   u8 lo, hi, v, x, y, z;
@@ -11,11 +23,8 @@ void disassemble(u16 instr) {
   y = hi >> 4;
   z = hi & 0x0f;
 
-  // Print instruction
   printf("%02x %02x ", lo, hi);
 
-  // Main switch
-  // Opcodes are stored in big endian in chip-8
   switch (v) {
   case 0x00:
     if (hi == 0xe0)
@@ -23,122 +32,122 @@ void disassemble(u16 instr) {
     else if (hi == 0xee)
       printf("RET\n");
     else
-      printf("invalid operation\n");
+      invalid(instr);
     break;
   case 0x01:
-    printf("JMP  %03x\n", (x << 8) + hi);
+    dis("JMP", "%03x", (x << 8) + hi);
     break;
   case 0x02:
-    printf("CALL %03x\n", (x << 8) + hi);
+    dis("CALL", "%03x", (x << 8) + hi);
     break;
   case 0x03:
-    printf("SE   V%x %02x\n", x, hi);
+    dis("SE", "V%x %02x", x, hi);
     break;
   case 0x04:
-    printf("SNE  V%x %02x\n", x, hi);
+    dis("SNE", "V%x %02x", x, hi);
     break;
   case 0x05:
-    printf("SE   V%x V%x\n", x, y);
+    dis("SE", "V%x V%x", x, y);
     break;
   case 0x06:
-    printf("LD   V%x %02x\n", x, hi);
+    dis("LD", "V%x %02x", x, hi);
     break;
   case 0x07:
-    printf("ADD  V%x %02x\n", x, hi);
+    dis("ADD", "V%x %02x", x, hi);
     break;
   case 0x08:
     switch (z) {
     case 0x00:
-      printf("LD   V%x V%x\n", x, y);
+      dis("LD", "V%x V%x", x, y);
       break;
     case 0x01:
-      printf("OR   V%x V%x\n", x, y);
+      dis("OR", "V%x V%x", x, y);
       break;
     case 0x02:
-      printf("AND  V%x V%x\n", x, y);
+      dis("AND", "V%x V%x", x, y);
       break;
     case 0x03:
-      printf("XOR  V%x V%x\n", x, y);
+      dis("XOR", "V%x V%x", x, y);
       break;
     case 0x04:
-      printf("ADD  V%x V%x\n", x, y);
+      dis("ADD", "V%x V%x", x, y);
       break;
     case 0x05:
-      printf("SUB  V%x V%x\n", x, y);
+      dis("SUB", "V%x V%x", x, y);
       break;
     case 0x06:
-      printf("SHR  V%x\n", x);
+      dis("SHR", "V%x", x);
       break;
     case 0x07:
-      printf("SUBN V%x V%x\n", x, y);
+      dis("SUBN", "V%x V%x", x, y);
       break;
     case 0x08:
-      printf("SHL  V%x V%x\n", x, y);
+      dis("SHL", "V%x V%x", x, y);
       break;
     case 0x0e:
-      printf("SHL  V%x V%x\n", x, y);
+      dis("SHL", "V%x V%x", x, y);
       break;
     default:
-      printf("invalid operation\n");
+      invalid(instr);
     }
     break;
   case 0x09:
-    printf("SNE  V%x V%x\n", x, y);
+    dis("SNE", "V%x V%x", x, y);
     break;
   case 0x0a:
-    printf("LD   I %03x\n", (x << 8) + hi);
+    dis("LD", "I %03x", (x << 8) + hi);
     break;
   case 0x0b:
-    printf("JMP  %03x + V0\n", (x << 8) + hi);
+    dis("JMP", "%03x + V0", (x << 8) + hi);
     break;
   case 0x0c:
-    printf("RND  V%x %02x\n", x, hi);
+    dis("RND", "V%x %02x", x, hi);
     break;
   case 0x0d:
-    printf("DRW  V%x V%x %x\n", x, y, z);
+    dis("DRW", "V%x V%x %x", x, y, z);
     break;
   case 0x0e:
     if (hi == 0x9e)
-      printf("SKP  V%x\n", x);
+      dis("SKP ", "V%x", x);
     else if (hi == 0xa1)
-      printf("SKNP V%x\n", x);
+      dis("SKNP", "V%x", x);
     else
-      printf("invalid operation\n");
+      invalid(instr);
     break;
   case 0x0f:
     switch (hi) {
     case 0x07:
-      printf("LD   V%x DT\n", x);
+      dis("LD", "V%x DT", x);
       break;
     case 0x0a:
-      printf("LD   V%x K\n", x);
+      dis("LD", "V%x K", x);
       break;
     case 0x15:
-      printf("LD   DT V%x\n", x);
+      dis("LD", "DT V%x", x);
       break;
     case 0x18:
-      printf("LD   ST V%x\n", x);
+      dis("LD", "ST V%x", x);
       break;
     case 0x1E:
-      printf("ADD  I V%x\n", x);
+      dis("ADD", "I V%x", x);
       break;
     case 0x29:
-      printf("LD   F V%x\n", x);
+      dis("LD", "F V%x", x);
       break;
     case 0x33:
-      printf("LD   B V%x\n", x);
+      dis("LD", "B V%x", x);
       break;
     case 0x55:
-      printf("LD   [I] V%x\n", x);
+      dis("LD", "[I] V%x", x);
       break;
     case 0x65:
-      printf("LD   V%x [I]\n", x);
+      dis("LD", "V%x [I]", x);
       break;
     default:
-      printf("invalid operation\n");
+      invalid(instr);
     }
     break;
   default:
-    printf("invalid operation\n");
+    invalid(instr);
   }
 }

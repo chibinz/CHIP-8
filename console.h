@@ -21,7 +21,10 @@ typedef struct {
   u8 keypad[16];
 } console;
 
+static void invalid(u16 instr) { printf("Invalid instruction: %04x!", instr); }
+
 console console_new();
 void console_load_rom(console *console, char *rom_path);
 
+void disassemble_rom(u8 *rom, usize start, usize len);
 void disassemble(u16 instr);
