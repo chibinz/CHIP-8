@@ -31,7 +31,7 @@ cpu cpu_new() {
       .k = 0,
       .dt = 0,
       .st = 0,
-      .sp = 0xff,
+      .sp = 0,
       .i = 0,
       .pc = 0x200,
       .stack = {0},
@@ -45,7 +45,7 @@ console console_new() {
   return chip;
 }
 
-void console_load_rom(console *console, char *rom_path) {
+usize console_load_rom(console *console, char *rom_path) {
   FILE *rom = fopen(rom_path, "rb");
   if (rom == NULL) {
     printf("Failed to open rom: %s\n", rom_path);
@@ -54,4 +54,6 @@ void console_load_rom(console *console, char *rom_path) {
 
   usize len = fread(console->ram + 0x200, 1, 0x1000 - 0x200, rom);
   printf("Rom size: %ld bytes\n", len);
+
+  return len;
 }

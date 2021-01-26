@@ -10,20 +10,19 @@ void disassemble_rom(u8 *rom, usize start, usize len) {
   assert(len % 2 == 0);
 
   for (usize i = 0; i < len; i += 2) {
-    disassemble(*(u16 *)(rom + start + i));
+    printf("%03lx: ", i);
+    disassemble(rom[start + i], rom[start + i + 1]);
   }
 }
 
-void disassemble(u16 instr) {
-  u8 lo, hi, v, x, y, z;
-  lo = (u8)(instr >> 8);
-  hi = (u8)(instr);
+void disassemble(u8 lo, u8 hi) {
+  u8 v, x, y, z;
   v = lo >> 4;
   x = lo & 0x0f;
   y = hi >> 4;
   z = hi & 0x0f;
 
-  printf("%02x %02x ", lo, hi);
+  printf("%02x%02x ", lo, hi);
 
   switch (v) {
   case 0x00:
@@ -32,7 +31,7 @@ void disassemble(u16 instr) {
     else if (hi == 0xee)
       printf("RET\n");
     else
-      invalid(instr);
+      invalid();
     break;
   case 0x01:
     dis("JMP", "%03x", (x << 8) + hi);
@@ -88,7 +87,7 @@ void disassemble(u16 instr) {
       dis("SHL", "V%x V%x", x, y);
       break;
     default:
-      invalid(instr);
+      invalid();
     }
     break;
   case 0x09:
@@ -108,11 +107,11 @@ void disassemble(u16 instr) {
     break;
   case 0x0e:
     if (hi == 0x9e)
-      dis("SKP ", "V%x", x);
+      dis("SKP", "V%x", x);
     else if (hi == 0xa1)
       dis("SKNP", "V%x", x);
     else
-      invalid(instr);
+      invalid();
     break;
   case 0x0f:
     switch (hi) {
@@ -144,10 +143,10 @@ void disassemble(u16 instr) {
       dis("LD", "V%x [I]", x);
       break;
     default:
-      invalid(instr);
+      invalid();
     }
     break;
   default:
-    invalid(instr);
+    invalid();
   }
 }

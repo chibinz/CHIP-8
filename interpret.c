@@ -4,7 +4,6 @@
 
 #include "console.h"
 
-
 void console_step(console *console) {
   u8 *ram = console->ram;
   u8 *keypad = console->keypad;
@@ -20,8 +19,6 @@ void console_step(console *console) {
   z = hi & 0x0f;
   max = cpu->r[x] > cpu->r[y] ? cpu->r[x] : cpu->r[y];
 
-  u16 instr = ((u16)(lo) << 8) | hi;
-
   // PC gets incremented first
   cpu->pc += 2;
 
@@ -32,19 +29,19 @@ void console_step(console *console) {
     if (hi == 0xe0) { // CLS
       // clearScreen();
     } else if (hi == 0xee) { // RET
-      cpu->pc = stack[cpu->sp];
       cpu->sp -= 1;
+      cpu->pc = stack[cpu->sp];
     } else {
-      invalid(instr);
+      invalid();
     }
     break;
   case 0x01: // JMP
     cpu->pc = (x << 8) + hi;
     break;
   case 0x02: // CALL
-    cpu->sp += 1;
     stack[cpu->sp] = cpu->pc;
     cpu->pc = (x << 8) + hi;
+    cpu->sp += 1;
     break;
   case 0x03: // SE
     if (cpu->r[x] == hi) {
@@ -106,7 +103,7 @@ void console_step(console *console) {
       cpu->r[x] <<= 1;
       break;
     default:
-      invalid(instr);
+      invalid();
     }
     break;
   case 0x09: // SNE
@@ -128,20 +125,18 @@ void console_step(console *console) {
     break;
   case 0x0e:
     if (hi == 0x9e) {
-      printf("SKP  V%x, %x\n", x, cpu->r[x]);
       if (keypad[cpu->r[x]]) {
         cpu->pc += 2;
       }
       break;
     } else if (hi == 0xa1) {
-      printf("SKNP V%x, %x\n", x, cpu->r[x]);
       if (keypad[cpu->r[x]] == 0) {
         cpu->pc += 2;
         break;
       }
       break;
     } else {
-      invalid(instr);
+      invalid();
     }
     break;
   case 0x0f:
@@ -184,10 +179,10 @@ void console_step(console *console) {
         cpu->r[x + j] = ram[cpu->i + j];
       break;
     default:
-      invalid(instr);
+      invalid();
     }
     break;
   default:
-    invalid(instr);
+    invalid();
   }
 }

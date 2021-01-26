@@ -11,13 +11,13 @@ int main(int argc, char **argv) {
     exit(-1);
   }
 
-  struct mfb_window *window = mfb_open("CHIP-8", 64, 32);
-
   console chip = console_new();
-  console_load_rom(&chip, argv[1]);
+  usize len = console_load_rom(&chip, argv[1]);
+  disassemble_rom(chip.ram, 0x200, len);
 
-  mfb_update(window, chip.fb);
-  mfb_close(window);
+  // struct mfb_window *window = mfb_open("CHIP-8", 64, 32);
+  // mfb_update(window, chip.fb); // fb is u8 *, not u32 *
+  // mfb_close(window);
 
   return 0;
 }

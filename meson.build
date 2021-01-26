@@ -4,8 +4,7 @@ project('CHIP-8', 'c',
 
 cmake = import('cmake')
 
-minifb = cmake.subproject('minifb')
-libminifb = minifb.dependency('minifb')
+minifb = cmake.subproject('minifb').dependency('minifb')
 
 executable('chip',
            'console.c',
@@ -13,4 +12,4 @@ executable('chip',
            'interpret.c',
            'main.c',
            install : true,
-	         dependencies : [libminifb])
+	         dependencies : [minifb])
