@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
   console_load_rom(&chip, argv[1]);
 
   mfb_update(window, chip.fb);
-
   mfb_close(window);
 
   return 0;

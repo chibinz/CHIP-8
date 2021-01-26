@@ -2,10 +2,10 @@
 
 #include "console.h"
 
-void disassemble(u16 instruction) {
+void disassemble(u16 instr) {
   u8 lo, hi, v, x, y, z;
-  lo = (u8)(instruction >> 8);
-  hi = (u8)(instruction);
+  lo = (u8)(instr >> 8);
+  hi = (u8)(instr);
   v = lo >> 4;
   x = lo & 0x0f;
   y = hi >> 4;

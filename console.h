@@ -24,4 +24,4 @@ typedef struct {
 console console_new();
 void console_load_rom(console *console, char *rom_path);
 
-void disassemble(u16 instruction);
+void disassemble(u16 instr);
