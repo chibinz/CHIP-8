@@ -12,4 +12,4 @@ executable('chip',
            'interpret.c',
            'main.c',
            install : true,
-	         dependencies : [minifb])
+           dependencies : [minifb])
