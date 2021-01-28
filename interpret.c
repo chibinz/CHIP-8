@@ -19,6 +19,10 @@ void console_step(console *console) {
   z = hi & 0x0f;
   max = cpu->r[x] > cpu->r[y] ? cpu->r[x] : cpu->r[y];
 
+  u16 nnn = ((u16)x << 8) | hi;
+
+  disassemble(lo, hi);
+
   // PC gets incremented first
   cpu->pc += 2;
 
@@ -27,7 +31,7 @@ void console_step(console *console) {
   switch (v) {
   case 0x00:
     if (hi == 0xe0) { // CLS
-      // clearScreen();
+      fb_clear(console->fb);
     } else if (hi == 0xee) { // RET
       cpu->sp -= 1;
       cpu->pc = stack[cpu->sp];
@@ -36,11 +40,11 @@ void console_step(console *console) {
     }
     break;
   case 0x01: // JMP
-    cpu->pc = (x << 8) + hi;
+    cpu->pc = nnn;
     break;
   case 0x02: // CALL
     stack[cpu->sp] = cpu->pc;
-    cpu->pc = (x << 8) + hi;
+    cpu->pc = nnn;
     cpu->sp += 1;
     break;
   case 0x03: // SE
@@ -112,16 +116,16 @@ void console_step(console *console) {
     }
     break;
   case 0x0a: // LD
-    cpu->i = (x << 8) + hi;
+    cpu->i = nnn;
     break;
   case 0x0b: // JMP
-    cpu->pc = (x << 8) + hi + cpu->r[0];
+    cpu->pc = nnn + cpu->r[0];
     break;
   case 0x0c: // RND
     cpu->r[x] = ((u8)rand()) & hi;
     break;
   case 0x0d: // DRW
-    // cpu->f = drawcpu->sprite(cpu->r[x], cpu->r[y], z);
+    cpu->f = fb_draw_sprite(console->fb, &ram[cpu->i], cpu->r[x], cpu->r[y], z);
     break;
   case 0x0e:
     if (hi == 0x9e) {
@@ -146,7 +150,7 @@ void console_step(console *console) {
       break;
     case 0x0a: // LD
       while (1) {
-        for (int i = 0; i < 0x10; i++)
+        for (u8 i = 0; i < 16; i++)
           if (keypad[i] == 1) {
             cpu->r[x] = i;
             cpu->pc += 2;

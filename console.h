@@ -26,6 +26,10 @@ typedef struct {
 
 console console_new();
 usize console_load_rom(console *console, char *rom_path);
+void console_step(console *console);
+
+void fb_clear(u8 *fb);
+u8 fb_draw_sprite(u8 *fb, u8 *sprite, u8 vx, u8 vy, u8 n);
 
 void disassemble(u8 lo, u8 hi);
 void disassemble_rom(u8 *rom, usize start, usize len);

@@ -4,18 +4,15 @@
 #include "MiniFB.h"
 #include "console.h"
 
-static inline u32 *scale_u32(u8 *orig, usize scale) {
+static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
   usize width = 64 * scale;
   usize height = 32 * scale;
-  u32 *scaled = (u8 *)malloc(width * height * sizeof(u32));
 
   for (usize y = 0; y < height; y++) {
     for (usize x = 0; x < width; x++) {
       scaled[y * width + x] = (u32)orig[(y / scale) * 64 + x / scale];
     }
   }
-
-  return scaled;
 }
 
 int main(int argc, char **argv) {
@@ -30,12 +27,16 @@ int main(int argc, char **argv) {
   disassemble_rom(chip.ram, 0x200, len);
 
   usize scale = 4;
-  u32 *scaled = scale_u32(chip.fb, scale); // fb is u8 *, not u32 *
+  u32 *scaled = (u32 *)malloc(64 * 32 * scale * scale * sizeof(u32));
 
   struct mfb_window *window = mfb_open("CHIP-8", 64 * scale, 32 * scale);
-  mfb_update(window, scaled);
-  mfb_close(window);
 
+  while (mfb_update(window, scaled) >= 0) {
+    console_step(&chip);
+    scale_u32(chip.fb, scaled, scale);
+  }
+
+  mfb_close(window);
   free(scaled);
 
   return 0;

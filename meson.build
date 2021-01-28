@@ -9,6 +9,7 @@ minifb = cmake.subproject('minifb').dependency('minifb')
 executable('chip',
            'console.c',
            'disassemble.c',
+           'graphics.c',
            'interpret.c',
            'main.c',
            install : true,

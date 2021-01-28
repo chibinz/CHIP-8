@@ -7,9 +7,8 @@
 
 void disassemble_rom(u8 *rom, usize start, usize len) {
   assert(start % 2 == 0);
-  assert(len % 2 == 0);
 
-  for (usize i = 0; i < len; i += 2) {
+  for (usize i = 0; i < (len / 2) * 2; i += 2) {
     printf("%03lx: ", i);
     disassemble(rom[start + i], rom[start + i + 1]);
   }
