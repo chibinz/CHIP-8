@@ -1,5 +1,5 @@
-sources = files('console.c',
+lib_src = files('console.c',
                 'disassemble.c',
-                'graphics.c',
-                'interpret.c',
-                'main.c')
+                'graphics.c')
+
+exe_src = files('main.c')

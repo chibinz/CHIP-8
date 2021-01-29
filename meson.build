@@ -8,8 +8,11 @@ minifb = cmake.subproject('minifb').dependency('minifb')
 incdir = include_directories('include')
 subdir('src')
 
+libchip = static_library('chip',
+                         lib_src,
+                         include_directories : incdir)
 executable('chip',
-           sources,
-           install : true,
+           exe_src,
+           link_with : libchip,
            include_directories : incdir,
            dependencies : [minifb])

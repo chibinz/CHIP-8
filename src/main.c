@@ -4,7 +4,7 @@
 #include "MiniFB.h"
 #include "console.h"
 
-static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
+static void scale_u32(u8 *orig, u32 *scaled, usize scale) {
   usize width = 64 * scale;
   usize height = 32 * scale;
 
@@ -15,7 +15,7 @@ static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
   }
 }
 
-static inline void set_keys(struct mfb_window *window, u8 *keypad) {
+static void set_keys(struct mfb_window *window, u8 *keypad) {
   const u8 *kb = mfb_get_key_buffer(window);
 
   keypad[0x0] = kb[KB_KEY_X];
@@ -36,6 +36,19 @@ static inline void set_keys(struct mfb_window *window, u8 *keypad) {
   keypad[0xf] = kb[KB_KEY_V];
 }
 
+static usize load_rom(console *console, char *rom_path) {
+  FILE *rom = fopen(rom_path, "rb");
+  if (rom == NULL) {
+    printf("Failed to open rom: %s\n", rom_path);
+    exit(-1);
+  }
+
+  usize len = fread(console->ram + 0x200, 1, 0x1000 - 0x200, rom);
+  printf("Rom size: %ld bytes\n", len);
+
+  return len;
+}
+
 int main(int argc, char **argv) {
   // Check number of arguments
   if (argc != 2) {
@@ -44,7 +57,7 @@ int main(int argc, char **argv) {
   }
 
   console chip = console_new();
-  usize len = console_load_rom(&chip, argv[1]);
+  usize len = load_rom(&chip, argv[1]);
   disassemble_rom(chip.ram, 0x200, len);
 
   usize scale = 4;

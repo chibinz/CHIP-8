@@ -29,7 +29,6 @@ typedef struct {
 } console;
 
 console console_new();
-usize console_load_rom(console *console, char *rom_path);
 void console_timer_tick(console *console);
 void console_cpu_tick(console *console);
 void console_tick(console *console);
