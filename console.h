@@ -1,6 +1,10 @@
+#include <stdio.h>
+#include <assert.h>
+
 #include "types.h"
 
 #define invalid() printf("Invalid instruction!\n")
+#define unimplemented() assert(!"Not implemented!\n")
 
 typedef struct {
   u8 r[16]; // General purpose registers

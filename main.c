@@ -15,6 +15,27 @@ static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
   }
 }
 
+static inline void set_keys(struct mfb_window *window, u8 *keypad) {
+  u8 *kb = mfb_get_key_buffer(window);
+
+  keypad[0x0] = kb[KB_KEY_X];
+  keypad[0x1] = kb[KB_KEY_1];
+  keypad[0x2] = kb[KB_KEY_2];
+  keypad[0x3] = kb[KB_KEY_3];
+  keypad[0x4] = kb[KB_KEY_Q];
+  keypad[0x5] = kb[KB_KEY_W];
+  keypad[0x6] = kb[KB_KEY_E];
+  keypad[0x7] = kb[KB_KEY_A];
+  keypad[0x8] = kb[KB_KEY_S];
+  keypad[0x9] = kb[KB_KEY_D];
+  keypad[0xa] = kb[KB_KEY_Z];
+  keypad[0xb] = kb[KB_KEY_C];
+  keypad[0xc] = kb[KB_KEY_4];
+  keypad[0xd] = kb[KB_KEY_R];
+  keypad[0xe] = kb[KB_KEY_F];
+  keypad[0xf] = kb[KB_KEY_V];
+}
+
 int main(int argc, char **argv) {
   // Check number of arguments
   if (argc != 2) {
@@ -32,8 +53,9 @@ int main(int argc, char **argv) {
   struct mfb_window *window = mfb_open("CHIP-8", 64 * scale, 32 * scale);
 
   while (mfb_update(window, scaled) >= 0) {
-    console_tick(&chip);
+    set_keys(window, chip.keypad);
     scale_u32(chip.fb, scaled, scale);
+    console_tick(&chip);
   }
 
   mfb_close(window);

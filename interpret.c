@@ -142,18 +142,15 @@ void console_cpu_tick(console *console) {
     cpu->r[0xf] =
         fb_draw_sprite(console->fb, &ram[cpu->i], cpu->r[x], cpu->r[y], z);
     break;
-  case 0x0e:
+  case 0x0e: // Keypad instrs
     if (hi == 0x9e) {
       if (keypad[cpu->r[x]]) {
         cpu->pc += 2;
       }
-      break;
     } else if (hi == 0xa1) {
       if (keypad[cpu->r[x]] == 0) {
         cpu->pc += 2;
-        break;
       }
-      break;
     } else {
       invalid();
     }
@@ -164,13 +161,7 @@ void console_cpu_tick(console *console) {
       cpu->r[x] = console->dt;
       break;
     case 0x0a: // LD
-      while (1) {
-        for (u8 i = 0; i < 16; i++)
-          if (keypad[i] == 1) {
-            cpu->r[x] = i;
-            cpu->pc += 2;
-          }
-      }
+      unimplemented();
       break;
     case 0x15: // LD
       console->dt = cpu->r[x];
