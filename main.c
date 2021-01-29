@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
   struct mfb_window *window = mfb_open("CHIP-8", 64 * scale, 32 * scale);
 
   while (mfb_update(window, scaled) >= 0) {
-    console_step(&chip);
+    console_tick(&chip);
     scale_u32(chip.fb, scaled, scale);
   }
 

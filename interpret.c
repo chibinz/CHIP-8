@@ -1,23 +1,40 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "console.h"
 
-void console_step(console *console) {
+void console_tick(console *console) {
+  console_cpu_tick(console);
+  console_timer_tick(console);
+}
+
+// CHIP-8 CPU runs at about 500 Hz
+// Timer frequency is 60 Hz
+// 500 / 60 = 8
+void console_timer_tick(console *console) {
+  console->tick += 1;
+
+  if (console->tick == 8) {
+    console->tick = 0;
+    console->dt = console->dt == 0 ? 0 : console->dt - 1;
+    console->st = console->st == 0 ? 0 : console->st - 1;
+  }
+}
+
+void console_cpu_tick(console *console) {
   u8 *ram = console->ram;
   u8 *keypad = console->keypad;
   u16 *stack = console->cpu.stack;
   cpu *cpu = &console->cpu;
 
-  u8 lo, hi, v, x, y, z, max;
+  u8 lo, hi, v, x, y, z;
   lo = ram[cpu->pc];
   hi = ram[cpu->pc + 1];
   v = lo >> 4;
   x = lo & 0x0f;
   y = hi >> 4;
   z = hi & 0x0f;
-  max = cpu->r[x] > cpu->r[y] ? cpu->r[x] : cpu->r[y];
 
   u16 nnn = ((u16)x << 8) | hi;
 
@@ -83,27 +100,24 @@ void console_step(console *console) {
       cpu->r[x] ^= cpu->r[y];
       break;
     case 0x04: // ADD
-      cpu->f = (cpu->r[x] + cpu->r[y]) > max ? 0 : 1;
-      cpu->r[x] += cpu->r[y];
+      u8 sum = cpu->r[x] + cpu->r[y];
+      cpu->r[0xf] = (u8)(sum < cpu->r[x]);
+      cpu->r[x] = sum;
       break;
     case 0x05: // SUB
-      cpu->f = (cpu->r[x] == max) ? 1 : 0;
-      cpu->r[x] -= cpu->r[y];
+      cpu->r[0xf] = (u8)(cpu->r[x] > cpu->r[y]);
+      cpu->r[x] = cpu->r[x] - cpu->r[y];
       break;
     case 0x06: // SHR
-      cpu->f = (cpu->r[x] & 1) ? 1 : 0;
+      cpu->r[0xf] = (cpu->r[x] & 1) ? 1 : 0;
       cpu->r[x] >>= 1;
       break;
     case 0x07: // SUBN
-      cpu->f = (cpu->r[y] == max) ? 1 : 0;
+      cpu->r[0xf] = (u8)(cpu->r[y] > cpu->r[x]);
       cpu->r[x] = cpu->r[y] - cpu->r[x];
       break;
-    case 0x08: // SHL
-      cpu->f = (cpu->r[x] & 0x80) ? 1 : 0;
-      cpu->r[x] <<= 1;
-      break;
     case 0x0e: // SHL
-      cpu->f = (cpu->r[x] & 0x80) ? 1 : 0;
+      cpu->r[0xf] = (cpu->r[x] & 0x80) ? 1 : 0;
       cpu->r[x] <<= 1;
       break;
     default:
@@ -111,7 +125,7 @@ void console_step(console *console) {
     }
     break;
   case 0x09: // SNE
-    if (cpu->r[x] == cpu->r[y]) {
+    if (cpu->r[x] != cpu->r[y]) {
       cpu->pc += 2;
     }
     break;
@@ -125,7 +139,8 @@ void console_step(console *console) {
     cpu->r[x] = ((u8)rand()) & hi;
     break;
   case 0x0d: // DRW
-    cpu->f = fb_draw_sprite(console->fb, &ram[cpu->i], cpu->r[x], cpu->r[y], z);
+    cpu->r[0xf] =
+        fb_draw_sprite(console->fb, &ram[cpu->i], cpu->r[x], cpu->r[y], z);
     break;
   case 0x0e:
     if (hi == 0x9e) {
@@ -146,7 +161,7 @@ void console_step(console *console) {
   case 0x0f:
     switch (hi) {
     case 0x07: // LD
-      cpu->r[x] = cpu->dt;
+      cpu->r[x] = console->dt;
       break;
     case 0x0a: // LD
       while (1) {
@@ -158,10 +173,10 @@ void console_step(console *console) {
       }
       break;
     case 0x15: // LD
-      cpu->dt = cpu->r[x];
+      console->dt = cpu->r[x];
       break;
     case 0x18: // LD
-      cpu->st = cpu->r[x];
+      console->st = cpu->r[x];
       break;
     case 0x1E: // ADD
       cpu->i += cpu->r[x];
@@ -174,13 +189,11 @@ void console_step(console *console) {
       ram[cpu->i + 1] = (cpu->r[x] % 100) / 10;
       ram[cpu->i + 2] = cpu->r[x] % 10;
       break;
-    case 0x55: // LD
-      for (int j = 0; j <= x; j++)
-        ram[cpu->i + j] = cpu->r[x + j];
+    case 0x55: // LD [I], Vx
+      memcpy(&ram[cpu->i], cpu->r, x + 1);
       break;
     case 0x65: // LD
-      for (int j = 0; j <= x; j++)
-        cpu->r[x + j] = ram[cpu->i + j];
+      memcpy(cpu->r, &ram[cpu->i], x + 1);
       break;
     default:
       invalid();

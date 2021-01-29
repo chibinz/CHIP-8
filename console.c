@@ -27,10 +27,7 @@ static const u8 characters[0x200] = {
 cpu cpu_new() {
   return (cpu){
       .r = {0},
-      .f = 0,
       .k = 0,
-      .dt = 0,
-      .st = 0,
       .sp = 0,
       .i = 0,
       .pc = 0x200,
@@ -39,7 +36,14 @@ cpu cpu_new() {
 }
 
 console console_new() {
-  console chip = {.cpu = cpu_new(), .ram = {0}, .fb = {0}, .keypad = {0}};
+  console chip = {.cpu = cpu_new(),
+                  .dt = 0,
+                  .st = 0,
+                  .tick = 0,
+                  .ram = {0},
+                  .fb = {0},
+                  .keypad = {0}};
+
   memcpy(chip.ram, characters, sizeof(characters));
 
   return chip;
