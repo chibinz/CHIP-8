@@ -3,14 +3,13 @@ project('CHIP-8', 'c',
   default_options : ['warning_level=3'])
 
 cmake = import('cmake')
-
 minifb = cmake.subproject('minifb').dependency('minifb')
 
+incdir = include_directories('include')
+subdir('src')
+
 executable('chip',
-           'console.c',
-           'disassemble.c',
-           'graphics.c',
-           'interpret.c',
-           'main.c',
+           sources,
            install : true,
+           include_directories : incdir,
            dependencies : [minifb])
