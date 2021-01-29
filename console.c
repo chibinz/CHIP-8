@@ -27,7 +27,6 @@ static const u8 characters[0x200] = {
 cpu cpu_new() {
   return (cpu){
       .r = {0},
-      .k = 0,
       .sp = 0,
       .i = 0,
       .pc = 0x200,

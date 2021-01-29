@@ -38,7 +38,7 @@ void console_cpu_tick(console *console) {
 
   u16 nnn = ((u16)x << 8) | hi;
 
-  disassemble(lo, hi);
+  // disassemble(lo, hi);
 
   // PC gets incremented first
   cpu->pc += 2;
