@@ -9,8 +9,8 @@ static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
   usize height = 32 * scale;
 
   for (usize y = 0; y < height; y++) {
-    for (usize x = 0; x < width; x++) {
-      scaled[y * width + x] = (u32)orig[(y / scale) * 64 + x / scale] << 8; // Green
+    for (usize x = 0; x < width; x++) { // Shift blue into green
+      scaled[y * width + x] = (u32)orig[(y / scale) * 64 + x / scale] << 8;
     }
   }
 }
