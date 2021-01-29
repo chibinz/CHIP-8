@@ -10,13 +10,13 @@ static inline void scale_u32(u8 *orig, u32 *scaled, usize scale) {
 
   for (usize y = 0; y < height; y++) {
     for (usize x = 0; x < width; x++) {
-      scaled[y * width + x] = (u32)orig[(y / scale) * 64 + x / scale];
+      scaled[y * width + x] = (u32)orig[(y / scale) * 64 + x / scale] << 8; // Green
     }
   }
 }
 
 static inline void set_keys(struct mfb_window *window, u8 *keypad) {
-  u8 *kb = mfb_get_key_buffer(window);
+  const u8 *kb = mfb_get_key_buffer(window);
 
   keypad[0x0] = kb[KB_KEY_X];
   keypad[0x1] = kb[KB_KEY_1];
