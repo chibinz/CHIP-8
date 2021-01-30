@@ -1,10 +1,14 @@
 # CHIP-8
 First attempt writing an emulator
 
-Development of this emulator started in late 2018, but it was only made fully functional until early 2021. Back then I hoped to gain a foothold on emulation development by implementing this CHIP-8 emulator, but progress soon came into a cease due to lack of computer architecture knowledge and inadequate debugging skills. It took just a few days to fix the bugs previously commited once I picked up this project the second time. The way that CHIP-8 handles IO, dedicated instructions for drawing sprites and blocking for keypad input, drastically differs from real machines, which is usually done by MMIO. Nevertheless, I think it is a fun and worthwhile experience.
+<p align="center">
+  <img src="chip.gif">
+</p>
+
+The development of this emulator started in late 2018, but it was only made fully functional until early 2021. Back then, I hoped to gain a foothold on emulation development by implementing this CHIP-8 emulator, but progress soon came to a cease due to a lack of computer architecture knowledge and inadequate debugging skills. It took just a few days to fix the bugs previously committed once I picked up this project the second time. The way that CHIP-8 handles IO, dedicated instructions for drawing sprites and blocking for keypad input, drastically differs from real machines, which is usually done by MMIO. Nevertheless, I think it is a fun and worthwhile experience.
 
 ## Features
-This emulator is created with cross-platform support in mind. Two binaries are generated at build, `libchip.a` and `chip`. The former is a static library that implements the core logic of the CHIP-8 interpreter. By default, the `console` struct is allocated on stack; no allocation is needed. Rom loading functionality is up to the user to implement to avoid dependency on the file system. Core functions are exposed in the `console.h` header file. The latter is an example frontend that handles IO and links against `libchip.a`. `chip` is tested on both Windows and Linux, but presumably adapting it to embedded devices would require minimal effort.
+This emulator is created with cross-platform support in mind. Two binaries are generated at build, `libchip.a` and `chip`. The former is a static library that implements the core logic of the CHIP-8 interpreter. By default, the `console` struct is allocated on the stack; no allocation is needed. Rom loading functionality is up to the user to implement to avoid dependency on the file system. Core functions are exposed in the `console.h` header file. `chip` is tested on both Windows and Linux, but presumably adapting it to embedded devices would require minimal effort.
 
 ```C
 console console_new();
@@ -32,7 +36,9 @@ build/chip <path_to_rom.ch8>
 ## Dependencies
 - `meson`
 - `cmake`
-`chip` relies on `MiniFB` to get a frame buffer, but you don't need to explicitly install it yourself. `meson` directly fetch source files from the `MiniFB` repository declared in `subprojects/minifb.wrap`. However, you still need `cmake` to build `MiniFB`. Prebuilt binaries are available at the github release section.
+- `ninja`
+
+`chip` relies on `MiniFB` to get a frame buffer, but you don't need to install it yourself explicitly. `meson` directly fetch source files from the `MiniFB` repository declared in `subprojects/minifb.wrap`. However, you still need `cmake` to build `MiniFB`. Prebuilt binaries are available in the GitHub [release](https://github.com/chibinz/CHIP-8/releases) section.
 
 ## References
 - [Emulator 101](http://www.emulator101.com/chip-8-emulator.html)
