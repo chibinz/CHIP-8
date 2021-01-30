@@ -71,7 +71,7 @@ void console_cpu_tick(console *console) {
   u16 *stack = console->cpu.stack;
   cpu *cpu = &console->cpu;
 
-  u8 lo, hi, v, x, y, z;
+  u8 lo, hi, v, x, y, z, sum;
   lo = ram[cpu->pc];
   hi = ram[cpu->pc + 1];
   v = lo >> 4;
@@ -143,7 +143,7 @@ void console_cpu_tick(console *console) {
       cpu->r[x] ^= cpu->r[y];
       break;
     case 0x04: // ADD
-      u8 sum = cpu->r[x] + cpu->r[y];
+      sum = cpu->r[x] + cpu->r[y];
       cpu->r[0xf] = (u8)(sum < cpu->r[x]);
       cpu->r[x] = sum;
       break;
